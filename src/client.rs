@@ -18,11 +18,16 @@ fn main() {
     let bytes_proc = (num_messages * (message_size_bytes + 4)) as f64;
     let mb_proc = bytes_proc / (1000.0 * 1000.0);
     let thru = mb_proc / duration_sec;
-    println!("Processed {} bytes in {} seconds. Throughput: {} MBps, recorded batches: {}",
+    let mean_lat = latencies.iter().fold(0, |acc, &x| acc + x) as f64 / (latencies.len() as f64) /
+                   (1000.0);
+
+    println!("Processed {} bytes in {} seconds. Throughput: {} MBps, recorded batches: {}, mean \
+              latency: {} microseconds",
              bytes_proc,
              duration_sec,
              thru,
-             latencies.len());
+             latencies.len(),
+             mean_lat);
 
 }
 

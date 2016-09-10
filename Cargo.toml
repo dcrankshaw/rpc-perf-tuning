@@ -20,6 +20,10 @@ path="src/client.rs"
 name="server"
 path="src/server.rs"
 
+[[bin]]
+name="clippermw"
+path="src/rpc.rs"
+
 [dependencies]
 rand = "0.3"
 time = "0.1"

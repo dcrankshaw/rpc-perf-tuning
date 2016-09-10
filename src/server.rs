@@ -28,7 +28,7 @@ fn start_listening() {
         let payload_bytes = cursor.read_u32::<LittleEndian>().unwrap() as usize;
         let mut payload_buffer: Vec<u8> = vec![0; payload_bytes];
         stream.read_exact(&mut payload_buffer).unwrap();
-        thread::sleep(Duration::from_millis(10));
+        // thread::sleep(Duration::from_millis(15));
         stream.write_all(&response_message[..]).unwrap();
     }
 }
