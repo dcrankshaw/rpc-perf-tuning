@@ -5,6 +5,8 @@ use std::net::TcpListener;
 use byteorder::{LittleEndian, WriteBytesExt, ReadBytesExt};
 use std::io::{Read, Write, Cursor};
 use std::mem;
+use std::time::Duration;
+use std::thread;
 
 fn main() {
     start_listening();
@@ -26,6 +28,7 @@ fn start_listening() {
         let payload_bytes = cursor.read_u32::<LittleEndian>().unwrap() as usize;
         let mut payload_buffer: Vec<u8> = vec![0; payload_bytes];
         stream.read_exact(&mut payload_buffer).unwrap();
+        thread::sleep(Duration::from_millis(10));
         stream.write_all(&response_message[..]).unwrap();
     }
 }
