@@ -26,9 +26,13 @@ fn start_listening() {
         stream.read_exact(&mut header_buffer).unwrap();
         let mut cursor = Cursor::new(header_buffer);
         let payload_bytes = cursor.read_u32::<LittleEndian>().unwrap() as usize;
+        println!("Expecting payload length: {}", payload_bytes);
         let mut payload_buffer: Vec<u8> = vec![0; payload_bytes];
         stream.read_exact(&mut payload_buffer).unwrap();
+        println!("stream reading finished");
         // thread::sleep(Duration::from_millis(15));
         stream.write_all(&response_message[..]).unwrap();
+        stream.flush();
+        println!("responding with {} bytes", response_message.len());
     }
 }

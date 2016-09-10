@@ -23,7 +23,7 @@ fn main() {
 }
 
 fn start_listening() {
-    let listener = TcpListener::bind("127.0.0.1:6001").unwrap();
+    let listener = TcpListener::bind("0.0.0.0:7777").unwrap();
     let (mut stream, _) = listener.accept().unwrap();
     // let mut response_message: Vec<u8> = Vec::new();
     // for i in 0..100 {
@@ -31,15 +31,17 @@ fn start_listening() {
     // }
     // assert_eq!(response_message.len(), 100 * mem::size_of::<u32>());
     loop {
-        let header_bytes = 9 * mem::size_of::<u32>();
+        let header_bytes = 2 * mem::size_of::<u32>() + 1;
         let mut header_buffer: Vec<u8> = vec![0; header_bytes];
         stream.read_exact(&mut header_buffer).unwrap();
         let mut header_cursor = Cursor::new(header_buffer);
         let code = header_cursor.read_u8().unwrap();
+        // println!("read type code");
         assert_eq!(code, FIXEDFLOAT_CODE);
         let num_inputs = header_cursor.read_u32::<LittleEndian>().unwrap() as usize;
         let input_len = header_cursor.read_u32::<LittleEndian>().unwrap() as usize;
         assert_eq!(input_len, 784);
+        // println!("read header");
 
         let payload_bytes = num_inputs * input_len * mem::size_of::<f64>();
         let mut payload_buffer: Vec<u8> = vec![0; payload_bytes];
@@ -59,5 +61,6 @@ fn start_listening() {
         }
         // thread::sleep(Duration::from_millis(15));
         stream.write_all(&response_message[..]).unwrap();
+        stream.flush();
     }
 }
